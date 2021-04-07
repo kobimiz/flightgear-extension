@@ -22,14 +22,11 @@
 
         <Label Content="Settings:" FontWeight="Bold"/>
         <Label Content="Flightgear location:" Grid.Row="1"/>
-        <Label Content="XML location:" Grid.Row="2"/>
-        <Label Content="CSV location:" Grid.Row="3"/>
+        <Label Content="CSV location:" Grid.Row="2"/>
         <Label x:Name="fgPath" Content="FG location" Grid.Row="1" Grid.Column="1"/>
-        <Label x:Name="xmlPath" Content="XML location:" Grid.Row="2" Grid.Column="1"/>
-        <Label x:Name="csvPath" Content="CSV location:" Grid.Row="3" Grid.Column="1"/>
+        <Label x:Name="csvPath" Content="CSV location:" Grid.Row="2" Grid.Column="1"/>
         <Button x:Name="openFG" Content="Change" Grid.Column="2" Grid.Row="1" Click="changeSettings"/>
-        <Button x:Name="openXML" Content="Change" Grid.Column="2" Grid.Row="2" Click="changeSettings"/>
-        <Button x:Name="openCSV" Content="Change" Grid.Column="2" Grid.Row="3" Click="changeSettings"/>
+        <Button x:Name="openCSV" Content="Change" Grid.Column="2" Grid.Row="2" Click="changeSettings"/>
         <Grid/>
     </Grid>
 </Window>

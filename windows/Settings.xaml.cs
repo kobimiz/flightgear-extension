@@ -30,7 +30,6 @@ namespace flightgearExtension
             // initialize button labal map for change path function
             buttonLabelMap = new Dictionary<object, Label>();
             buttonLabelMap[openFG] = fgPath;
-            buttonLabelMap[openXML] = xmlPath;
             buttonLabelMap[openCSV] = csvPath;
 
             settings = new SettingsConfigurator();
