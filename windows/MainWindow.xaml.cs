@@ -1,22 +1,13 @@
-﻿using flightgearExtension.classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Path = System.IO.Path;
 
 namespace flightgearExtension
@@ -26,32 +17,48 @@ namespace flightgearExtension
     /// </summary>
     public partial class MainWindow : Window
     {
-        Settings settings;
+        private Settings settings;
+        private mvvm.SimPlayerViewModel vm;
+        TcpClient client;
+        StreamWriter writer;
+
 
         public MainWindow()
         {
             InitializeComponent();
 
             settings = new Settings();
-        }
+            vm = new mvvm.SimPlayerViewModel(new mvvm.SimPlayerModel());
+            DataContext = vm;
+            client = null;
+            writer = null;
 
-        private void openXML_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-            // Set filter for file extension and default file extension 
-            dlg.Filter = "XML Files (*.xml)|*.xml|All Files |*.*";
-
-            // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
-
-
-            // Get the selected file name and display in a TextBox 
-            if (result == true)
+            vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
             {
-                // Open document 
-                string filename = dlg.FileName;
-            }
+                if (e.PropertyName == "VM_frameIndex")
+                {
+                    try
+                    {
+                        if (vm.VM_Data != null && writer != null)
+                        {
+                            if (vm.VM_frameIndex < vm.VM_Data.Length)
+                            {
+                                writer.WriteLine(vm.VM_Data[vm.VM_frameIndex]);
+                                writer.Flush();
+                            }
+                            else
+                            {
+                                vm.pause();
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Simulation not running with the correct settings.");
+                        vm.pause();
+                    }
+                }
+            };
         }
 
         private void launchFG(object sender, RoutedEventArgs e)
@@ -59,6 +66,11 @@ namespace flightgearExtension
             // TODO make sure path leads to flightgear.
             try
             {
+                if (!vm.loadCSV(settings.getSettingValue("csvPath")))
+                {
+                    MessageBox.Show("Please load a CSV file first.");
+                    return;
+                }
                 // NOTE this does not work if the user changes the dir name from data (or if changed the dir protocol)
                 // TODO: fix this
 
@@ -74,16 +86,23 @@ namespace flightgearExtension
                 }
 
                 Process p = Process.Start(fgPath,
-                            "--generic=socket,in,10,127.0.0.1,5400,tcp,playback_small --fg-root=\"" + dataDir + "\"");
-
+                            "--generic=socket,in,10,127.0.0.1,5400,tcp,playback_small --fg-root=\"" + dataDir + "\" --timeofday=noon");
             }
             catch (FileNotFoundException)
             {
                 MessageBox.Show("Not a valid path of Flightgear. Please change it in the settings window.");
             }
-            catch (Exception)
+            catch (DirectoryNotFoundException)
             {
-                MessageBox.Show("Unknown error occured.");
+                MessageBox.Show("Not a valid path of Flightgear. Please change it in the settings window.");
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Not a valid path of Flightgear. Please change it in the settings window.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unknown error occured."  + ex.Message);
             }
         }
 
@@ -107,46 +126,106 @@ namespace flightgearExtension
 
         public void startSim(object sender, RoutedEventArgs e)
         {
-
-            // TODO: the application hangs when starting the simulation. fix this maybe by using a different thread.
-
             // check if flightgear is running
             // setting name is the name of the label that it is shown at in the windows settings.
             // TODO: think of a better way
-            Process[] pname = Process.GetProcessesByName(getProcessName(settings.getSettingValue("fgPath")));
-            if (pname.Length == 0)
+            if (vm.VM_Data == null)
             {
-                // TODO: explain to the user what constitutes as correct settings 
-                MessageBox.Show("Please make sure flightgear is running with the correct settings or run via the 'Launch flightgear' button.");
+                MessageBox.Show("Please load a CSV file first.");
                 return;
             }
-
             try
             {
-                TcpClient client = new TcpClient("localhost", 5400);
-                StreamReader input = new StreamReader(settings.getSettingValue("csvPath"));
-                StreamWriter output = new StreamWriter(client.GetStream());
-                string line;
-                while ((line = input.ReadLine()) != null)
+                Process[] pname = Process.GetProcessesByName(getProcessName(settings.getSettingValue("fgPath")));
+                if (pname.Length == 0)
                 {
-                    output.WriteLine(line);
-                    output.Flush();
-                    Thread.Sleep(10);
+                    // TODO: explain to the user what constitutes as correct settings 
+                    MessageBox.Show("Please make sure flightgear is running with the correct settings or run via the 'Launch flightgear' button.");
+                    return;
                 }
-                output.Close();
-                input.Close();
-                client.Close();
+
+                client = new TcpClient("localhost", 5400);
+                writer = new StreamWriter(client.GetStream());
+                vm.VM_frameIndex = 0;
+                vm.play();
             }
-            catch (SocketException)
+            catch (InvalidOperationException)
             {
-                // TODO: explain to the user what constitutes as correct settings 
-                MessageBox.Show("Please make sure flightgear is running with the correct settings or run via the 'Launch flightgear' button.");
+                MessageBox.Show("Please open flightgear first or wait for it to load properly.");
+                vm.pause();
+                return;
             }
             catch (Exception)
             {
-                MessageBox.Show("An unknown error has occured");
+                MessageBox.Show("An unknown message has occured.");
+                vm.pause();
             }
+        }
 
+        public void play(object sender, RoutedEventArgs e)
+        {
+            if (client == null)
+                MessageBox.Show("Please start the simulation first");
+            else if (vm.VM_Data == null)
+                MessageBox.Show("Please load a CSV first");
+            else
+                vm.play();
+        }
+        public void pause(object sender, RoutedEventArgs e)
+        {
+            if (client == null)
+                MessageBox.Show("Please start the simulation first");
+            else if (vm.VM_Data == null)
+                MessageBox.Show("Please load a CSV first");
+            else
+                vm.pause();
+        }
+        public void FiveSecFor(object sender, RoutedEventArgs e)
+        {
+            if (client == null)
+                MessageBox.Show("Please start the simulation first");
+            else if (vm.VM_Data == null)
+                MessageBox.Show("Please load a CSV first");
+            else
+                vm.skip(5);
+        }
+
+        public void FiveSecPrev(object sender, RoutedEventArgs e)
+        {
+            if (client == null)
+                MessageBox.Show("Please start the simulation first");
+            else if (vm.VM_Data == null)
+                MessageBox.Show("Please load a CSV first");
+            else
+                vm.skip(-5);
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (writer != null)
+            {
+                writer.Close();
+                client.Close();
+            }
+        }
+
+        private void speedTb_PrevTextInput(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                TextBox origin = sender as TextBox;
+                if (origin.Text + e.Text == "" || (e.Text == "." && origin.Text.IndexOf(".") == -1))
+                    return;
+                // try to parse
+                int speed = int.Parse(origin.Text + e.Text);
+                // limits to speed
+                if (speed <= 0.0) throw new Exception("Invalid speed");
+            }
+            catch (Exception)
+            {
+                // if failed, dont allow edit
+                e.Handled = true;
+            }
         }
     }
 }

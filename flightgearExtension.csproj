@@ -4,10 +4,28 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Interface1.cs" />
+    <Compile Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="NewFolder1\**" />
+    <None Remove="NewFolder1\**" />
+    <Page Remove="NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="windows\doubleLeftArrow.png" />
+    <None Remove="windows\doubleRightArrow.png.png" />
+    <None Remove="windows\pause.png" />
+    <None Remove="windows\play.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="windows\doubleLeftArrow.png" />
+    <Resource Include="windows\doubleRightArrow.png.png" />
+    <Resource Include="windows\pause.png" />
+    <Resource Include="windows\play.png" />
   </ItemGroup>
 
 </Project>

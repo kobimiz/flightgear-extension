@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:flightgearExtension"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Closed="Window_Closed">
     <Grid Margin="10" TextBlock.FontSize="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -13,16 +13,42 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="6*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Label Content="Menu" Grid.Row="0" Grid.Column="0" Padding="0 10 0 10"/>
-        <Button x:Name="settingsButton" Content="Settings" Click="openSettings" Grid.Row="1" Width="auto" HorizontalAlignment="Left" Padding="5"/>
-        <Button x:Name="launchButton" Content="Launch flightgear" Click="launchFG" Grid.Row="2" Width="auto" HorizontalAlignment="Left" Margin="0 10 0 0" Padding="5"/>
-        <Button x:Name="startSimButton" Content="Start simulation" Click="startSim" Grid.Row="3" Width="auto" HorizontalAlignment="Left" Margin="0 10 0 0" Padding="5"/>
+        <Label Content="Menu" Grid.Row="0" Grid.Column="0" Padding="0 10 0 10" HorizontalAlignment="center"/>
+        <Button x:Name="settingsButton" Content="Settings" Click="openSettings" Grid.Row="1" Width="auto" HorizontalAlignment="Stretch" Padding="5"/>
+        <Button x:Name="launchButton" Content="Launch flightgear" Click="launchFG" Grid.Row="2" Width="auto" HorizontalAlignment="Stretch" Margin="0 10 0 0" Padding="5"/>
+        <Button x:Name="startSimButton" Content="Start simulation" Click="startSim" Grid.Row="3" Width="auto" HorizontalAlignment="Stretch" Margin="0 10 0 0" Padding="5"/>
+        
+        <Label Content="Controllers" Grid.Row="0" Grid.Column="2" Padding="0 10 0 10" HorizontalAlignment="Center"/>
+
+        <Label Grid.Row="2" Grid.Column="2" FontSize="15" VerticalAlignment="Bottom">(FPS is a positive integer)</Label>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center">
+            <Label VerticalAlignment="Center">FPS:</Label>
+            <TextBox Name="speedTb" Width="50" Height="44" VerticalAlignment="Center" Text="{Binding Path=VM_FPS, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="speedTb_PrevTextInput"/>
+            <Button Margin="5" Click="FiveSecPrev">
+                <Image Source="/windows/doubleLeftArrow.png" Width="20" Height="20" Margin="10"></Image>
+            </Button>
+            <Button Margin="5" Click="play">
+                <Image Source="/windows/play.png" Width="20" Height="20" Margin="10"></Image>
+            </Button>
+            <Button Margin="5" Click="pause">
+                <Image Source="/windows/pause.png" Width="20" Height="20" Margin="10"></Image>
+            </Button>
+            <Button Margin="5" Click="FiveSecFor">
+                <Image Source="/windows/doubleRightArrow.png.png" Width="20" Height="20" Margin="10"></Image>
+            </Button>
+        </StackPanel>
+        <Slider Minimum="0"  Value="{Binding VM_frameIndex}" Maximum="{Binding VM_Data.Length}" TickPlacement="None" Grid.Row="4" Grid.Column="2" Name="progressSlider"></Slider>
+        <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal">
+            <Label>Frame:</Label>
+            <Label Name="frameIndexLabel" Content="{Binding VM_frameIndex}"></Label>
+        </StackPanel>
     </Grid>
 </Window>
