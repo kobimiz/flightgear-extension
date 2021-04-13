@@ -7,11 +7,35 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Controls\menu.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="mvvm\dataDisplayView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="mvvm\dataView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="mvvm\SimPlayerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="windows\Settings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\menu.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="mvvm\dataDisplayView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="mvvm\dataView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="mvvm\SimPlayerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="windows\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

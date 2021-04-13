@@ -7,13 +7,14 @@ using System.Threading;
 
 namespace flightgearExtension.mvvm
 {
-    class SimPlayerModel : ISimPlayerModel
+    public class Model
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private int m_frameIndex;
         private double m_FPS;
         private string[] m_Data;
+        private string[] m_headings;
 
         public int frameIndex
         {
@@ -45,13 +46,23 @@ namespace flightgearExtension.mvvm
                 NotifyPropertyChanged("Data");
             }
         }
+        public string[] headings
+        {
+            get => m_headings;
+            set
+            {
+                m_headings = value;
+                NotifyPropertyChanged("headings");
+            }
+        }
 
-        public SimPlayerModel()
+        public Model()
         {
             // initialize
             frameIndex = 0;
             FPS = 30;
             Data = null;
+            headings = null;
         }
 
         public void NotifyPropertyChanged(string propName)

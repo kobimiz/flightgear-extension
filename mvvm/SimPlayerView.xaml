@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="flightgearExtension.mvvm.SimPlayerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:flightgearExtension.mvvm"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="8*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Content="Controllers" Grid.Row="1" HorizontalAlignment="Center"/>
+
+        <StackPanel Grid.Row="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label VerticalAlignment="Center" FontSize="16">FPS (a positive integer):</Label>
+                <TextBox Name="speedTb" Width="50" Height="44" VerticalAlignment="Center" Text="{Binding Path=VM_FPS, UpdateSourceTrigger=PropertyChanged}"
+                         TextAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="speedTb_PrevTextInput"/>
+                <Button Margin="5" Click="FiveSecPrev">
+                    <Image Source="/windows/doubleLeftArrow.png" Width="20" Height="20" Margin="10"></Image>
+                </Button>
+                <Button Margin="5" Click="play">
+                    <Image Source="/windows/play.png" Width="20" Height="20" Margin="10"></Image>
+                </Button>
+                <Button Margin="5" Click="pause">
+                    <Image Source="/windows/pause.png" Width="20" Height="20" Margin="10"></Image>
+                </Button>
+                <Button Margin="5" Click="FiveSecFor">
+                    <Image Source="/windows/doubleRightArrow.png.png" Width="20" Height="20" Margin="10"></Image>
+                </Button>
+            </StackPanel>
+            <Slider Minimum="0"  Value="{Binding VM_frameIndex}" Maximum="{Binding VM_Data.Length}" TickPlacement="None" Name="progressSlider"></Slider>
+
+            <StackPanel Orientation="Horizontal">
+                <Label>Frame:</Label>
+                <Label Name="frameIndexLabel" Content="{Binding VM_frameIndex}"></Label>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

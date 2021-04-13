@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="flightgearExtension.mvvm.dataDisplayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:flightgearExtension.mvvm"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel  TextBlock.FontSize="14">
+            <Label Content="Altitude: "/>
+            <Label Content="Airspeed: "/>
+            <Label Content="Orientation: "/>
+            <Label Content="Roll: "/>
+            <Label Content="Pitch: "/>
+            <Label Content="Yaw: "/>
+        </StackPanel>
+        <StackPanel  TextBlock.FontSize="14" Grid.Column="1">
+            <Label Name="altitudeLabel" Content="{Binding altitudeLabel}"/>
+            <Label Name="arispeedLabel" Content="{Binding arispeedLabel}"/>
+            <Label Name="orientationLabel" Content="{Binding orientationLabel}"/>
+            <Label Name="rollLabel" Content="{Binding rollLabel}"/>
+            <Label Name="pitchLabel" Content="{Binding pitchLabel}"/>
+            <Label Name="yawLabel" Content="{Binding yawLabel}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

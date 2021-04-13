@@ -3,44 +3,31 @@ using System.Text;
 using System.ComponentModel;
 using System.Windows;
 using System.Threading;
+using System.Net.Sockets;
+using System.IO;
 
 namespace flightgearExtension.mvvm
 {
-    class SimPlayerViewModel : INotifyPropertyChanged
+    public class SimPlayerViewModel : ViewModel
     {
         private volatile bool shouldStop;
         private Thread t;
         private ManualResetEvent threadSuspender = new ManualResetEvent(true);
+        private TcpClient client;
+        private StreamWriter writer;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public int VM_frameIndex {
-            get => model.frameIndex;
-            set => model.frameIndex = value;
-        }
-        public double VM_FPS {
-            get => model.FPS;
-            set => model.FPS = value;
-        }
-        public string[] VM_Data
+        // returns the property with the current frame index
+        /*public string this[string s]
         {
-            get => model.Data;
-            set => model.Data = value;
-        }
+            get { return model.Data[]; }
+        }*/
 
-        private ISimPlayerModel model;
-
-        public SimPlayerViewModel(ISimPlayerModel model)
+        public SimPlayerViewModel(Model model) : base(model)
         {
             shouldStop = true;
-            this.model = model;
+            client = null;
+            writer = null;
             threadSuspender = new ManualResetEvent(false);
-
-            model.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
-            {
-                NotifyPropertyChanged("VM_" + e.PropertyName);
-            };
-
 
             t = new Thread(delegate () {
                 while (true)
@@ -48,15 +35,10 @@ namespace flightgearExtension.mvvm
                     if (shouldStop)
                         threadSuspender.WaitOne();
                     skip(1);
-                    Thread.Sleep((int)(1000 / model.FPS));
+                    Thread.Sleep((int)(1000 / this.model.FPS));
                 }
             });
             t.Start();
-        }
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
 
         public bool loadCSV(string path)
@@ -69,6 +51,20 @@ namespace flightgearExtension.mvvm
             catch (Exception)
             {
                 model.Data = null;
+                return false;
+            }
+        }
+
+        public bool loadXML(string path)
+        {
+            try
+            {
+                model.headings = classes.Utility.getVariableNamesFromXML(path);
+                return true;
+            }
+            catch (Exception)
+            {
+                model.headings = null;
                 return false;
             }
         }
@@ -91,6 +87,36 @@ namespace flightgearExtension.mvvm
         public void skip(int frames)
         {
             model.frameIndex += frames;
+        }
+
+        public void startSim()
+        {
+            if (client == null)
+            {
+                client = new TcpClient("localhost", 5400);
+                writer = new StreamWriter(client.GetStream());
+            }
+            VM_frameIndex = 0;
+            play();
+        }
+        public void closeConnections()
+        {
+            if (writer != null)
+            {
+                writer.Close();
+                client.Close();
+            }
+        }
+        public bool isConnected()
+        {
+            return writer != null;
+        }
+
+        // sends the ith frame to the simulator
+        public void sendCurrFrame()
+        {
+            writer.WriteLine(VM_Data[VM_frameIndex]);
+            writer.Flush();
         }
     }
 }
