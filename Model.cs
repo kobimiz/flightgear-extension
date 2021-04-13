@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Threading;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     public class Model
     {
@@ -15,6 +15,7 @@ namespace flightgearExtension.mvvm
         private double m_FPS;
         private string[] m_Data;
         private string[] m_headings;
+        private string m_csvPath;
 
         public int frameIndex
         {
@@ -55,6 +56,15 @@ namespace flightgearExtension.mvvm
                 NotifyPropertyChanged("headings");
             }
         }
+        public string csvPath
+        {
+            get => m_csvPath;
+            set
+            {
+                m_csvPath = value;
+                NotifyPropertyChanged("csvPath");
+            }
+        }
 
         public Model()
         {
@@ -63,6 +73,7 @@ namespace flightgearExtension.mvvm
             FPS = 30;
             Data = null;
             headings = null;
+            csvPath = null;
         }
 
         public void NotifyPropertyChanged(string propName)

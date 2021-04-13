@@ -1,38 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Shapes;
-using Path = System.IO.Path;
 
-namespace flightgearExtension.Controls
+namespace flightgearExtension.viewModels
 {
-    /// <summary>
-    /// Interaction logic for menu.xaml
-    /// </summary>
-    public partial class menu : UserControl
+    public class menuViewModel : ViewModel
     {
-        private Settings settings;
-        private mvvm.SimPlayerView simPlayer;
-
-        public menu()
+        private SimPlayerViewModel simPlayerVM;
+        public menuViewModel(Model model) : base(model)
         {
-            InitializeComponent();
-            settings = new Settings();
         }
-
-        public void setSimPlayer(mvvm.SimPlayerView simPlayer)
+        public void setSimPlayerVM(SimPlayerViewModel vm)
         {
-            this.simPlayer = simPlayer;
+            simPlayerVM = vm;
         }
-
-        private void launchFG(object sender, RoutedEventArgs e)
+        public void launchFG(object sender)
         {
             // TODO make sure path leads to flightgear.
             try
             {
-                if (!simPlayer.vm.loadCSV(settings.getSettingValue("csvPath")))
+                SettingsView settings = new SettingsView();
+                settings.vm.setModel(model);
+
+                if (!simPlayerVM.loadCSV(settings.getSettingValue("csvPath")))
                 {
                     MessageBox.Show("Please load a CSV file first.");
                     return;
@@ -55,7 +49,7 @@ namespace flightgearExtension.Controls
                     return;
                 }
 
-                if (!simPlayer.vm.loadXML(protocolDir + "\\playback_small.xml"))
+                if (!simPlayerVM.loadXML(protocolDir + "\\playback_small.xml"))
                 {
                     MessageBox.Show("Please make sure there is an xml file first.");
                     return;
@@ -71,25 +65,34 @@ namespace flightgearExtension.Controls
                     MessageBox.Show("Unknown error occured." + ex.Message);
             }
         }
-
-        private void openSettings(object sender, RoutedEventArgs e)
+        public void openSettings()
         {
+            SettingsView settings = new SettingsView();
+            settings.vm.setModel(model);
+            settings.vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == "csvPath")
+                    simPlayerVM.loadCSV(settings.getSettingValue("csvPath"));
+            };
             settings.ShowDialog();
             settings.Close();
         }
 
-        public void startSim(object sender, RoutedEventArgs e)
+        public void startSim()
         {
             // check if flightgear is running
             // setting name is the name of the label that it is shown at in the windows settings.
             // TODO: think of a better way
-            if (simPlayer.vm.VM_Data == null)
+            if (VM_Data == null)
             {
                 MessageBox.Show("Please load a CSV file first.");
                 return;
             }
             try
             {
+                SettingsView settings = new SettingsView();
+                settings.vm.setModel(model);
+
                 Process[] pname = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.getSettingValue("fgPath")));
                 if (pname.Length == 0)
                 {
@@ -97,19 +100,20 @@ namespace flightgearExtension.Controls
                     MessageBox.Show("Please make sure flightgear is running with the correct settings or run via the 'Launch flightgear' button.");
                     return;
                 }
-                simPlayer.vm.startSim();
+                simPlayerVM.startSim();
             }
             catch (InvalidOperationException)
             {
                 MessageBox.Show("Please open flightgear first or wait for it to load properly.");
-                simPlayer.vm.pause();
+                simPlayerVM.pause();
                 return;
             }
             catch (Exception)
             {
                 MessageBox.Show("An unknown message has occured.");
-                simPlayer.vm.pause();
+                simPlayerVM.pause();
             }
         }
+
     }
 }

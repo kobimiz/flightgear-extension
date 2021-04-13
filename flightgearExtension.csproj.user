@@ -7,39 +7,39 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Controls\menu.xaml.cs">
+    <Compile Update="views\menuView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="mvvm\dataDisplayView.xaml.cs">
+    <Compile Update="views\dataDisplayView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="mvvm\dataView.xaml.cs">
+    <Compile Update="views\graphsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="mvvm\SimPlayerView.xaml.cs">
+    <Compile Update="views\SimPlayerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="windows\Settings.xaml.cs">
+    <Compile Update="views\SettingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Controls\menu.xaml">
+    <Page Update="views\menuView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="mvvm\dataDisplayView.xaml">
+    <Page Update="views\dataDisplayView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="mvvm\dataView.xaml">
+    <Page Update="views\graphsView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="mvvm\SimPlayerView.xaml">
+    <Page Update="views\SimPlayerView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="windows\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="windows\Settings.xaml">
+    <Page Update="views\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -22,10 +22,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="OxyPlot.Core" Version="2.0.0" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="windows\doubleLeftArrow.png" />
     <Resource Include="windows\doubleRightArrow.png.png" />
     <Resource Include="windows\pause.png" />
     <Resource Include="windows\play.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\" />
   </ItemGroup>
 
 </Project>

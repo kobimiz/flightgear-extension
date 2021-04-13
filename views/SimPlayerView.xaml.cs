@@ -6,20 +6,20 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     /// <summary>
     /// Interaction logic for SimPlayerView.xaml
     /// </summary>
     public partial class SimPlayerView : UserControl
     {
-        public mvvm.SimPlayerViewModel vm;
+        public viewModels.SimPlayerViewModel vm;
 
         public SimPlayerView()
         {
             InitializeComponent();
 
-            vm = new mvvm.SimPlayerViewModel(new mvvm.Model());
+            vm = new SimPlayerViewModel(null);
             DataContext = vm;
 
             vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)

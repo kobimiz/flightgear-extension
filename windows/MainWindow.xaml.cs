@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,8 +12,8 @@ namespace flightgearExtension
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Settings settings;
-        private mvvm.Model model;
+        private SettingsView settings;
+        private viewModels.Model model;
 
         //[DllImport("libAnomaly.dll")]
         //public static extern int _Z3addii(int x, int y);
@@ -21,13 +22,16 @@ namespace flightgearExtension
         {
             InitializeComponent();
 
-            model = new mvvm.Model();
-            simPlayer.vm.setModel(model);
-            dataDisplay.vm.setModel(model);
-
             //MessageBox.Show(_Z3addii(1,2).ToString());
 
-            settings = new Settings();
+            model = new viewModels.Model();
+            simPlayer.vm.setModel(model);
+            dataDisplay.vm.setModel(model);
+            data.vm.setModel(model);
+            menu.vm.setModel(model);
+            menu.vm.setSimPlayerVM(simPlayer.vm);
+
+            settings = new SettingsView();
             try
             {
                 // preload if xml file is in place
@@ -39,13 +43,12 @@ namespace flightgearExtension
                 // preload if csv is set
                 simPlayer.vm.loadCSV(settings.getSettingValue("csvPath"));
 
-                if (!simPlayer.vm.loadXML(classes.Utility.getProtocolDir() + "\\playback_small.xml"))
+               if (!simPlayer.vm.loadXML(classes.Utility.getProtocolDir() + "\\playback_small.xml"))
                 {
                     MessageBox.Show("Please make sure there is an xml file first.");
                     return;
                 }
             } catch (Exception) { }
-            menu.setSimPlayer(simPlayer);
         }
 
         private void Window_Closed(object sender, EventArgs e)

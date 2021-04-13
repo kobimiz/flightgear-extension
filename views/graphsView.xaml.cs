@@ -12,16 +12,22 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     /// <summary>
     /// Interaction logic for dataView.xaml
     /// </summary>
-    public partial class dataView : UserControl
+    public partial class GraphView : UserControl
     {
-        public dataView()
+        public viewModels.GraphViewModel vm;
+
+        public GraphView()
         {
             InitializeComponent();
+            vm = new GraphViewModel(null);
+            DataContext = vm;
+
+            //vm.Open("C:/Users/kobim/Desktop/pop.csv");
         }
         public void addVariableList()
         {
@@ -33,6 +39,19 @@ namespace flightgearExtension.mvvm
                 i.Content = item;
 
                 variableList.Items.Add(i);
+            }
+        }
+
+        private void variableList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox lb = sender as ListBox;
+            ListBoxItem selected = lb.SelectedItem as ListBoxItem;
+            int index = Array.FindIndex(vm.VM_headings, (item) => item == selected.Content.ToString());
+            if (index == -1)
+                e.Handled = true;
+            else
+            {
+                //vm.SelectedGraph = vm.Open();
             }
         }
     }

@@ -12,18 +12,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     /// <summary>
     /// Interaction logic for dataDisplayView.xaml
     /// </summary>
-    public partial class dataDisplayView : UserControl
+    public partial class DataDisplayView : UserControl
     {
         public dataDisplayViewModel vm;
-        public dataDisplayView()
+        public DataDisplayView()
         {
             InitializeComponent();
-            vm = new dataDisplayViewModel(new Model());
+            vm = new dataDisplayViewModel(null);
             DataContext = vm;
         }
     }

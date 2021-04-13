@@ -4,25 +4,19 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     public class dataDisplayViewModel : ViewModel
     {
         public dataDisplayViewModel(Model model) : base(model)
         {
-            /*
-            <Label Name="altitudeLabel" Content="{Binding Data[0]}"/>
-            <Label Name="arispeedLabel"/>
-            <Label Name="orientationLabel"/>
-            <Label Name="rollLabel"/>
-            <Label Name="pitchLabel"/>
-            <Label Name="yawLabel"/>
-             */
         }
 
         public override void setModel(Model m)
         {
             base.setModel(m);
+            if (m == null)
+                return;
             model.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == "frameIndex")
@@ -61,6 +55,7 @@ namespace flightgearExtension.mvvm
             get => getDataFromCurrFrameByName("side-slip-deg");
         }
 
+        // TODO: optimize
         private string getDataFromCurrFrameByName(string name)
         {
             if (model.Data == null || model.headings == null)

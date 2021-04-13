@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     abstract public class ViewModel : INotifyPropertyChanged
     {
@@ -19,10 +19,13 @@ namespace flightgearExtension.mvvm
         {
             this.model = model;
 
-            model.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
+            if (model != null)
             {
-                NotifyPropertyChanged("VM_" + e.PropertyName);
-            };
+                model.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
+                {
+                    NotifyPropertyChanged("VM_" + e.PropertyName);
+                };
+            }
         }
 
         public int VM_frameIndex
@@ -44,6 +47,11 @@ namespace flightgearExtension.mvvm
         {
             get => model.headings;
             set => model.headings = value;
+        }
+        public string VM_csvPath
+        {
+            get => model.csvPath;
+            set => model.csvPath = value;
         }
         public void NotifyPropertyChanged(string propName)
         {

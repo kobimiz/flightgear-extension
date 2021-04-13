@@ -6,7 +6,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.IO;
 
-namespace flightgearExtension.mvvm
+namespace flightgearExtension.viewModels
 {
     public class SimPlayerViewModel : ViewModel
     {
@@ -15,12 +15,6 @@ namespace flightgearExtension.mvvm
         private ManualResetEvent threadSuspender = new ManualResetEvent(true);
         private TcpClient client;
         private StreamWriter writer;
-
-        // returns the property with the current frame index
-        /*public string this[string s]
-        {
-            get { return model.Data[]; }
-        }*/
 
         public SimPlayerViewModel(Model model) : base(model)
         {

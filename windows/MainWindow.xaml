@@ -4,27 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:flightgearExtension"
-        xmlns:View="clr-namespace:flightgearExtension.mvvm"
+        xmlns:View="clr-namespace:flightgearExtension.viewModels"
         xmlns:Controls="clr-namespace:flightgearExtension.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1067" Closed="Window_Closed">
+        Title="MainWindow" Height="950" Width="1200" Closed="Window_Closed">
+    
     <Grid Margin="10" TextBlock.FontSize="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="6*"></RowDefinition>
-            <RowDefinition Height="4*"></RowDefinition>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3.1*"></ColumnDefinition>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="6*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Controls:menu x:Name="menu"></Controls:menu>
+        <StackPanel>
+            <Controls:menuView x:Name="menu"></Controls:menuView>
+            <View:DataDisplayView Grid.Column="0" x:Name="dataDisplay"></View:DataDisplayView>
+        </StackPanel>
 
-        <View:dataDisplayView Grid.Column="0" Grid.Row="1" x:Name="dataDisplay"></View:dataDisplayView>
 
-        <View:dataView x:Name="data" Grid.Column="1" Grid.Row="0"></View:dataView>
-
-        <View:SimPlayerView Grid.Row="0" Grid.Column="2" x:Name="simPlayer"/>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="4*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="Black" BorderThickness="3" Margin="10">
+                <View:GraphView x:Name="data"/>
+            </Border>
+            <View:SimPlayerView x:Name="simPlayer" Grid.Row="1"/>
+        </Grid>
     </Grid>
 </Window>

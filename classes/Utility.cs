@@ -8,7 +8,7 @@ namespace flightgearExtension.classes
 {
     class Utility
     {
-        static Settings settings = new Settings();
+        static SettingsView settings = new SettingsView();
         public static string[] getVariableNamesFromXML(string XMLPath)
         {
             XmlDocument d = new XmlDocument();
