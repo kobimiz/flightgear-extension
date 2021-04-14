@@ -26,13 +26,6 @@ namespace flightgearExtension.viewModels
                 SettingsView settings = new SettingsView();
                 settings.vm.setModel(model);
 
-                if (!simPlayerVM.loadCSV(settings.getSettingValue("csvPath")))
-                {
-                    MessageBox.Show("Please load a CSV file first.");
-                    return;
-                }
-
-
                 Process[] pname = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.getSettingValue("fgPath")));
                 if (pname.Length == 1)
                 {

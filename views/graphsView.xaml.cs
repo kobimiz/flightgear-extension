@@ -41,18 +41,5 @@ namespace flightgearExtension.viewModels
                 variableList.Items.Add(i);
             }
         }
-
-        private void variableList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ListBox lb = sender as ListBox;
-            ListBoxItem selected = lb.SelectedItem as ListBoxItem;
-            int index = Array.FindIndex(vm.VM_headings, (item) => item == selected.Content.ToString());
-            if (index == -1)
-                e.Handled = true;
-            else
-            {
-                //vm.SelectedGraph = vm.Open();
-            }
-        }
     }
 }
