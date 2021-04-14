@@ -82,9 +82,9 @@ namespace flightgearExtension.viewModels
                     SettingsViewModel vm = new SettingsViewModel(model);
                     csv.Load(vm.getSettingValue("csvPath"));
 
-                    selectedGraph = createGraphFromIndex(selectedGraphIndex);
-                    correlatedGraph = createGraphFromIndex(correlatedGraphIndex);
-                    regressionGraph = createGraphFromIndex(regressionGraphIndex);
+                    SelectedGraph = createGraphFromIndex(selectedGraphIndex);
+                    CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex);
+                    RegressionGraph = createGraphFromIndex(regressionGraphIndex);
                 }
             };
             PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
