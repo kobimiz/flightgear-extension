@@ -44,8 +44,9 @@ namespace flightgearExtension.viewModels
                 model.Data = System.IO.File.ReadAllLines(path);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                MessageBox.Show(e.Message);
                 model.Data = null;
                 return false;
             }
