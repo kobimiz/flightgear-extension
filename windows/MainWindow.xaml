@@ -29,7 +29,8 @@
             <Border BorderBrush="Black" BorderThickness="3" Margin="10">
                 <View:GraphView x:Name="data"/>
             </Border>
-            <View:SimPlayerView x:Name="simPlayer" Grid.Row="1"/>
+            <View:JoystickView x:Name="joystick" Margin="0,415,0,-60" Grid.RowSpan="2"/>
+            <View:SimPlayerView x:Name="simPlayer" Grid.Row="1" Loaded="simPlayer_Loaded"/>
         </Grid>
     </Grid>
 </Window>
