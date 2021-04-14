@@ -9,38 +9,55 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System.Linq;
+using flightgearExtension.classes;
+using System.Threading;
 
 namespace flightgearExtension.viewModels
 {
     public class GraphViewModel : ViewModel
     {
         private PlotModel selectedGraph;
-        private classes.CsvDocument csv;
+        private PlotModel correlatedGraph;
+        private PlotModel regressionGraph;
+
+        private int selectedGraphIndex;
+        private int correlatedGraphIndex;
+        private int regressionGraphIndex;
+
+        private CsvDocument csv;
+
+        public int SelectedGraphIndex
+        {
+            get { return selectedGraphIndex; }
+            set { 
+                selectedGraphIndex = value;
+                // TODO: modify reg and cor graph indices
+                NotifyPropertyChanged("SelectedGraphIndex");
+            }
+        }
 
         public PlotModel SelectedGraph
         {
             get { return selectedGraph; }
             set { selectedGraph = value; NotifyPropertyChanged("SelectedGraph"); }
         }
-        private PlotModel correlatedGraph;
         public PlotModel CorrelatedGraph
         {
             get { return correlatedGraph; }
             set { correlatedGraph = value; NotifyPropertyChanged("CorrelatedGraph"); }
         }
-        private PlotModel regressionGraph;
         public PlotModel RegressionGraph
         {
             get { return regressionGraph; }
             set { regressionGraph = value; NotifyPropertyChanged("RegressionGraph"); }
         }
+
         public GraphViewModel(Model model) : base(model)
         {
-            SelectedGraph = Open("C:/Users/kobim/Desktop/pop.csv");
-            CorrelatedGraph = Open("C:/Users/kobim/Desktop/temp.csv");
-            RegressionGraph = Open("C:/Users/kobim/Desktop/riverflow.csv");
-
-            csv = null;
+            SelectedGraphIndex = 0;
+            correlatedGraphIndex = 1;
+            regressionGraphIndex = 2;
+            csv = new CsvDocument();
         }
 
         public override void setModel(Model m)
@@ -50,93 +67,78 @@ namespace flightgearExtension.viewModels
                 return;
             model.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
             {
-                if (e.PropertyName == "csvPath")
+                if (e.PropertyName == "frameIndex")
                 {
-                    updatePoints(regressionGraph, 0, 0);
+                    updatePoints(SelectedGraph, selectedGraphIndex, VM_frameIndex);
+                    updatePoints(CorrelatedGraph, selectedGraphIndex, VM_frameIndex);
+                    updatePoints(regressionGraph, selectedGraphIndex, VM_frameIndex);
+                    selectedGraph.InvalidatePlot(true);
+                    correlatedGraph.InvalidatePlot(true);
+                    regressionGraph.InvalidatePlot(true);
+                }
+                else if (e.PropertyName == "Data")
+                {
+                    SettingsViewModel vm = new SettingsViewModel(model);
+                    csv.Load(vm.getSettingValue("csvPath"));
+
+                    selectedGraph = createGraphFromIndex(selectedGraphIndex);
+                    correlatedGraph = createGraphFromIndex(correlatedGraphIndex);
+                    regressionGraph = createGraphFromIndex(regressionGraphIndex);
+                }
+            };
+            PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == "SelectedGraphIndex")
+                {
+                    updatePoints(SelectedGraph, selectedGraphIndex, VM_frameIndex);
+                    updatePoints(CorrelatedGraph, selectedGraphIndex, VM_frameIndex);
+                    updatePoints(regressionGraph, selectedGraphIndex, VM_frameIndex);
+                    selectedGraph.InvalidatePlot(true);
+                    correlatedGraph.InvalidatePlot(true);
+                    regressionGraph.InvalidatePlot(true);
                 }
             };
         }
         public void updatePoints(PlotModel graph, int index, int frameIndex)
         {
+            if (frameIndex >= VM_Data.Length)
+                return;
             LineSeries ls = graph.Series[0] as LineSeries;
             if (frameIndex > ls.Points.Count - 1)
             {
                 // need to add points that are missing
-                ls.Points.AddRange(
-                    VM_Data.Select(line => new DataPoint(1.0,1.0))
-                );
+                List<DataPoint> range = new List<DataPoint>();
+                // TODO: check index validity
+                for (int i = ls.Points.Count; i < frameIndex; i++)
+                    range.Add(new DataPoint(i, double.Parse(csv.Items[i][index])));
+
+                ls.Points.AddRange(range);
             }
-            MessageBox.Show(ls.Points.Count.ToString());
+            else if (frameIndex < ls.Points.Count - 1)
+            {
+                // need to remove points
+                if (frameIndex < 0)
+                    return;
+                ls.Points.RemoveRange(frameIndex, ls.Points.Count - frameIndex);
+            }
         }
-        public PlotModel Open(string file)
+        // index is the index of the variable in the csv file in each row
+        public PlotModel createGraphFromIndex(int index)
         {
-            csv = new classes.CsvDocument();
-            csv.Load(file);
+            SettingsViewModel vm = new SettingsViewModel(model);
+            
             PlotModel tmp = new PlotModel
             {
-                Title = Path.GetFileNameWithoutExtension(file),
+                Title = Path.GetFileNameWithoutExtension(vm.getSettingValue("csvPath")),
                 PlotMargins = new OxyThickness(50, 0, 0, 40)
             };
 
-            for (int i = 1; i < csv.Headers.Length; i++)
-            {
-                var ls = new LineSeries { Title = csv.Headers[i] };
-                foreach (var item in csv.Items)
-                {
-                    double x = this.ParseDouble(item[0]);
-                    double y = this.ParseDouble(item[i]);
-                    ls.Points.Add(new DataPoint(x, y));
-                }
+            var ls = new LineSeries { Title = csv.Headers[index] };
+            tmp.Series.Add(ls);
 
-                tmp.Series.Add(ls);
-            }
-
+            // TODO handle non header csv
             tmp.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = csv.Headers[0] });
             return tmp;
-        }
-
-        // index is the index of the variable in the csv file in each row
-        /*public PlotModel createGraphFromIndex(int index)
-        {
-            var doc = new classes.CsvDocument();
-            //doc.Load();
-            PlotModel tmp = new PlotModel
-            {
-                Title = Path.GetFileNameWithoutExtension(file),
-                PlotMargins = new OxyThickness(50, 0, 0, 40)
-            };
-
-            for (int i = 1; i < doc.Headers.Length; i++)
-            {
-                var ls = new LineSeries { Title = doc.Headers[i] };
-                foreach (var item in doc.Items)
-                {
-                    double x = this.ParseDouble(item[0]);
-                    double y = this.ParseDouble(item[i]);
-                    ls.Points.Add(new DataPoint(x, y));
-                }
-
-                tmp.Series.Add(ls);
-            }
-
-            tmp.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = doc.Headers[0] });
-            return tmp;
-        }*/
-
-        private double ParseDouble(string s)
-        {
-            if (s == null)
-            {
-                return double.NaN;
-            }
-            s = s.Replace(',', '.');
-            double result;
-            if (double.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
-            {
-                return result;
-            }
-
-            return double.NaN;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Threading;
+using OxyPlot;
 
 namespace flightgearExtension.viewModels
 {
@@ -14,6 +15,7 @@ namespace flightgearExtension.viewModels
         private int m_frameIndex;
         private double m_FPS;
         private string[] m_Data;
+        private IEnumerable<DataPoint> m_parsedData;
         private string[] m_headings;
         private string m_csvPath;
 
@@ -56,6 +58,16 @@ namespace flightgearExtension.viewModels
                 NotifyPropertyChanged("headings");
             }
         }
+        public IEnumerable<DataPoint> parsedData
+        {
+            get => m_parsedData;
+            set
+            {
+                m_parsedData = value;
+                NotifyPropertyChanged("parsedData");
+            }
+        }
+        // TODO: consider removing
         public string csvPath
         {
             get => m_csvPath;

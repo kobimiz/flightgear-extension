@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -48,11 +49,19 @@ namespace flightgearExtension.viewModels
             get => model.headings;
             set => model.headings = value;
         }
+        // TODO consider removing this
         public string VM_csvPath
         {
             get => model.csvPath;
             set => model.csvPath = value;
         }
+        public IEnumerable<DataPoint> parsedData
+        {
+            get => model.parsedData;
+            set => model.parsedData = value;
+        }
+
+
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)

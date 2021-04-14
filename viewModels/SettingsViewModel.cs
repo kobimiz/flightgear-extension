@@ -39,36 +39,7 @@ namespace flightgearExtension.viewModels
             NotifyPropertyChanged(buttonLabelMap[sender].Name);
             updateLabels();
         }
-        public void changeFGLocation()
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
-            // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Get the selected file name and display in a TextBox 
-            if (result == false)
-                return;
-
-            settings.Set("fgPath", dlg.FileName);
-            settings.saveToFile();
-            updateLabels();
-        }
-        public void changeCSVLocation()
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-            // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Get the selected file name and display in a TextBox 
-            if (result == false)
-                return;
-
-            settings.Set("csvPath", dlg.FileName);
-            settings.saveToFile();
-            updateLabels();
-        }
         public void updateLabels()
         {
             foreach (var item in buttonLabelMap)

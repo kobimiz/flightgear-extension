@@ -36,14 +36,6 @@ namespace flightgearExtension
         {
             vm.changeSettings(sender);
         }
-        private void changeFGLocation(object sender, RoutedEventArgs e)
-        {
-            vm.changeFGLocation();
-        }
-        private void changeCSVLocation(object sender, RoutedEventArgs e)
-        {
-            vm.changeCSVLocation();
-        }
 
         public string getSettingValue(string key)
         {

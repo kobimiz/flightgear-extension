@@ -5,6 +5,8 @@ using System.Windows;
 using System.Threading;
 using System.Net.Sockets;
 using System.IO;
+using System.Collections.Generic;
+using OxyPlot;
 
 namespace flightgearExtension.viewModels
 {
