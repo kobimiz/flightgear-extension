@@ -75,6 +75,7 @@ namespace flightgearExtension.viewModels
                     selectedGraph.InvalidatePlot(true);
                     correlatedGraph.InvalidatePlot(true);
                     regressionGraph.InvalidatePlot(true);
+
                 }
                 else if (e.PropertyName == "Data")
                 {

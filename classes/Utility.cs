@@ -13,7 +13,8 @@ namespace flightgearExtension.classes
         {
             XmlDocument d = new XmlDocument();
             d.Load(XMLPath);
-            XmlNodeList x = d.GetElementsByTagName("chunk");
+            XmlNode input = d.GetElementsByTagName("input")[0];
+            XmlNodeList x = input.SelectNodes("chunk");
             string[] res = new string[x.Count];
             for (int i = 0; i < x.Count; i++)
                 res[i] = x[i].SelectSingleNode("name").InnerText;
