@@ -8,12 +8,12 @@
              d:DesignHeight="400" d:DesignWidth="400">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="8*"></RowDefinition>
-            <RowDefinition Height="4*"></RowDefinition>
+            <RowDefinition Height="52*"></RowDefinition>
+            <RowDefinition Height="233*"></RowDefinition>
+            <RowDefinition Height="115*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Label Content="Controllers" Grid.Row="1" HorizontalAlignment="Center"/>
+        <Label Content="Controllers" HorizontalAlignment="Center" Margin="0,8,0,20" Width="68"/>
 
         <StackPanel Grid.Row="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -33,7 +33,7 @@
                     <Image Source="/windows/doubleRightArrow.png.png" Width="20" Height="20" Margin="10"></Image>
                 </Button>
             </StackPanel>
-            <Slider Minimum="0"  Value="{Binding VM_frameIndex}" Maximum="{Binding VM_Data.Length}" TickPlacement="None" Name="progressSlider"></Slider>
+            <Slider Minimum="0"  Value="{Binding VM_frameIndex}" Maximum="{Binding VM_Data.Length}" TickPlacement="None" Name="progressSlider" ValueChanged="progressSlider_ValueChanged"></Slider>
 
             <StackPanel Orientation="Horizontal">
                 <Label>Frame:</Label>

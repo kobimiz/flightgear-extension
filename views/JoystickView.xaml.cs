@@ -25,11 +25,5 @@ namespace flightgearExtension.viewModels
             vm = new JoystickViewModel(null);
             DataContext = vm;
         }
-        /*public void setValues()
-        {
-            // load variable values from xml file
-            //string variableValues = classes.Utility.getVariableValue(classes.Utility.getProtocolDir() + "\\playback_small.xml","rudder");
-            //rudderSlider.Value=(float.Parse(variableValues[2]));
-        }*/
     }
 }

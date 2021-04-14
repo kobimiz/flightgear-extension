@@ -8,18 +8,16 @@
         xmlns:Controls="clr-namespace:flightgearExtension.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="950" Width="1200" Closed="Window_Closed">
-    
+
     <Grid Margin="10" TextBlock.FontSize="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-
         <StackPanel>
             <Controls:menuView x:Name="menu"></Controls:menuView>
             <View:DataDisplayView Grid.Column="0" x:Name="dataDisplay"></View:DataDisplayView>
         </StackPanel>
-
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -29,8 +27,11 @@
             <Border BorderBrush="Black" BorderThickness="3" Margin="10">
                 <View:GraphView x:Name="data"/>
             </Border>
-            <View:JoystickView x:Name="joystick" Margin="0,415,0,-60" Grid.RowSpan="2"/>
-            <View:SimPlayerView x:Name="simPlayer" Grid.Row="1"/>
+
+            <View:SimPlayerView x:Name="simPlayer" Margin="222,548,0,0" Grid.RowSpan="2"/>
+            <View:JoystickView x:Name="joystick" Margin="-191,39,878,0" Grid.Row="1" Height="280" VerticalAlignment="Top"/>
+
+
         </Grid>
     </Grid>
 </Window>

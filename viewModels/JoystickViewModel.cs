@@ -6,11 +6,26 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Windows;
+using System.Windows.Data;
 
 namespace flightgearExtension.viewModels
 {
     public class JoystickViewModel : ViewModel
     {
+        //public float joystick_aileron=125;
+        //public float joystick_elevator=125;
+        public float joystick_aileron
+        {
+            get;set;
+        }
+        public float joystick_elevator
+        {
+            get;set;
+        }
+
+
+
         public JoystickViewModel(Model model) : base(model)
         {
 
@@ -28,6 +43,9 @@ namespace flightgearExtension.viewModels
                     NotifyPropertyChanged("aileronLabel");
                     NotifyPropertyChanged("throttleLabel");
                     NotifyPropertyChanged("elevatorLabel");
+                    joystick_aileron = float.Parse(aileronLabel.ToString()) * 120 + 65;
+                    joystick_elevator = float.Parse(elevatorLabel.ToString()) * 120 + 65;
+
                 }
             };
 
@@ -50,7 +68,7 @@ namespace flightgearExtension.viewModels
         }
         private string getDataFromCurrFrameByName(string name)
         {
-            if (model.Data == null || model.headings == null)
+           if (model.Data == null || model.headings == null)
                 return null;
             int index = Array.FindIndex(model.headings, (value) => value == name);
             if (index == -1)
