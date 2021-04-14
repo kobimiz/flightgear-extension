@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -83,22 +84,16 @@ namespace flightgearExtension.classes
             return cov(x, y) / (Math.Sqrt(var(x)) * Math.Sqrt(var(y)));
         }
 
-        /*
         // performs a linear regression and returns the line equation
-        Line linear_reg(Point** points)
+        public static Tuple<double, double> linear_reg(double[] x, double[] y)
         {
-            float x[x.Length], y[x.Length];
-            for (int i = 0; i < x.Length; i++)
-            {
-                x[i] = points[i]->x;
-                y[i] = points[i]->y;
-            }
-            float a = cov(x, y, x.Length) / var(x, x.Length);
-            float b = avg(y, x.Length) - a * (avg(x, x.Length));
+            List<DataPoint> l = new List<DataPoint>();
+            double a = cov(x, y) / var(x);
+            double b = avg(y) - a * avg(x);
 
-            return Line(a, b);
+            return new Tuple<double, double>(a, b);
         }
-
+        /*
         // returns the deviation between point p and the line equation of the points
         double dev(Point p, Point** points)
         {
