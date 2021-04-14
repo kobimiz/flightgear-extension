@@ -25,6 +25,7 @@ namespace flightgearExtension
             //MessageBox.Show(_Z3addii(1,2).ToString());
 
             model = new viewModels.Model();
+            joystick.vm.setModel(model);
             simPlayer.vm.setModel(model);
             dataDisplay.vm.setModel(model);
             data.vm.setModel(model);
@@ -63,5 +64,6 @@ namespace flightgearExtension
         {
             simPlayer.vm.closeConnections();
         }
+
     }
 }
