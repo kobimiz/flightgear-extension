@@ -48,14 +48,14 @@ namespace flightgearExtension
 
             try
             { 
-                // preload if csv is set
-                simPlayer.vm.loadCSV(settings.getSettingValue("csvPath"));
-
                if (!simPlayer.vm.loadXML(classes.Utility.getProtocolDir() + "\\playback_small.xml"))
                 {
-                    MessageBox.Show("Please make sure there is an xml file first.");
+                    MessageBox.Show("Please make sure there is an xml file first and restart the application.");
                     return;
                 }
+
+                // preload if csv is set
+                simPlayer.vm.loadCSV(settings.getSettingValue("csvPath"));
             } catch (Exception) { }
         }
 

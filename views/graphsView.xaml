@@ -14,7 +14,7 @@
             <ColumnDefinition Width="5*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <ListBox Name="variableList" Grid.Column="0" SelectionChanged="variableList_SelectionChanged" SelectedIndex="{Binding SelectedGraphIndex}"></ListBox>
+        <ListBox Name="variableList" Grid.Column="0" SelectedIndex="{Binding SelectedGraphIndex}"></ListBox>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"></RowDefinition>

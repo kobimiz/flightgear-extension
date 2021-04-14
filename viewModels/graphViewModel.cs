@@ -33,6 +33,14 @@ namespace flightgearExtension.viewModels
                 selectedGraphIndex = value;
                 // TODO: modify reg and cor graph indices
                 NotifyPropertyChanged("SelectedGraphIndex");
+                if (csv != null)
+                {
+                    correlatedGraphIndex = mostCorrelativeIndex();
+
+                    SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
+                    CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex, "Correlated: " + VM_headings[correlatedGraphIndex]);
+                    model.NotifyPropertyChanged("frameIndex");
+                }
             }
         }
 
@@ -70,8 +78,8 @@ namespace flightgearExtension.viewModels
                 if (e.PropertyName == "frameIndex")
                 {
                     updatePoints(SelectedGraph, selectedGraphIndex, VM_frameIndex);
-                    updatePoints(CorrelatedGraph, selectedGraphIndex, VM_frameIndex);
-                    updatePoints(regressionGraph, selectedGraphIndex, VM_frameIndex);
+                    updatePoints(CorrelatedGraph, correlatedGraphIndex, VM_frameIndex);
+                    updatePoints(regressionGraph, regressionGraphIndex, VM_frameIndex);
                     selectedGraph.InvalidatePlot(true);
                     correlatedGraph.InvalidatePlot(true);
                     regressionGraph.InvalidatePlot(true);
@@ -80,11 +88,14 @@ namespace flightgearExtension.viewModels
                 else if (e.PropertyName == "Data")
                 {
                     SettingsViewModel vm = new SettingsViewModel(model);
-                    csv.Load(vm.getSettingValue("csvPath"));
-
-                    SelectedGraph = createGraphFromIndex(selectedGraphIndex);
-                    CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex);
-                    RegressionGraph = createGraphFromIndex(regressionGraphIndex);
+                    if (csv.Load(vm.getSettingValue("csvPath")))
+                    {
+                        SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
+                        CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex, "Correlated: " + VM_headings[correlatedGraphIndex]);
+                        RegressionGraph = createGraphFromIndex(regressionGraphIndex, "Linear regression between the two");
+                    }
+                    else
+                        MessageBox.Show("There was a problem loading the csv file. Make sure it is not opened and can be read.");
                 }
             };
             PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
@@ -113,7 +124,8 @@ namespace flightgearExtension.viewModels
                 for (int i = ls.Points.Count; i < frameIndex; i++)
                     range.Add(new DataPoint(i, double.Parse(csv.Items[i][index])));
 
-                ls.Points.AddRange(range);
+                lock (this)
+                    ls.Points.AddRange(range);
             }
             else if (frameIndex < ls.Points.Count - 1)
             {
@@ -124,13 +136,13 @@ namespace flightgearExtension.viewModels
             }
         }
         // index is the index of the variable in the csv file in each row
-        public PlotModel createGraphFromIndex(int index)
+        public PlotModel createGraphFromIndex(int index, string name)
         {
             SettingsViewModel vm = new SettingsViewModel(model);
             
             PlotModel tmp = new PlotModel
             {
-                Title = Path.GetFileNameWithoutExtension(vm.getSettingValue("csvPath")),
+                Title = name,
                 PlotMargins = new OxyThickness(50, 0, 0, 40)
             };
 
@@ -138,8 +150,24 @@ namespace flightgearExtension.viewModels
             tmp.Series.Add(ls);
 
             // TODO handle non header csv
-            tmp.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = csv.Headers[0] });
+            tmp.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom });
             return tmp;
+        }
+
+        // returns the index of the most correlated feature to the corrently selected feature
+        private int mostCorrelativeIndex()
+        {
+            double[] currFeatureArray = getFeatureArray(selectedGraphIndex);
+            double[] pearsons = VM_headings.Select((heading, index) => Utility.pearson(getFeatureArray(index), currFeatureArray)).
+                Where((item, index) => index != selectedGraphIndex).ToArray(); // remove pearson of feature with itself
+            return pearsons.ToList().IndexOf(pearsons.Max());
+        }
+
+        // returns an array of the values of the feature in the given index throughout all frames
+        private double[] getFeatureArray(int index)
+        {
+            //double[] res = csv.Items.Select(row => double.Parse(row[index])).ToArray();
+            return csv.Items.Select(row => double.Parse(row[index])).ToArray();
         }
     }
 }

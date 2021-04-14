@@ -14,31 +14,39 @@ namespace flightgearExtension.classes
         /// </summary>
         /// <param name="fileName">Name of the file.</param>
         /// <param name="separator">The separator (auto-detect if not specified).</param>
-        public void Load(string fileName, char separator = '\0')
+        public bool Load(string fileName, char separator = '\0')
         {
-            using (var r = new StreamReader(fileName))
+            try
             {
-                var header = r.ReadLine();
-
-                if (separator == '\0')
+                using (var r = new StreamReader(fileName))
                 {
-                    // Auto detect
-                    int commaCount = Count(header, ',');
-                    int semicolonCount = Count(header, ';');
-                    separator = commaCount > semicolonCount ? ',' : ';';
-                }
+                    var header = r.ReadLine();
 
-                Headers = header.Split(separator);
-                Items = new Collection<string[]>();
+                    if (separator == '\0')
+                    {
+                        // Auto detect
+                        int commaCount = Count(header, ',');
+                        int semicolonCount = Count(header, ';');
+                        separator = commaCount > semicolonCount ? ',' : ';';
+                    }
 
-                while (!r.EndOfStream)
-                {
-                    var line = r.ReadLine();
-                    if (line == null || line.StartsWith("%") || line.StartsWith("//"))
-                        continue;
-                    Items.Add(line.Split(separator));
+                    Headers = header.Split(separator);
+                    Items = new Collection<string[]>();
+
+                    while (!r.EndOfStream)
+                    {
+                        var line = r.ReadLine();
+                        if (line == null || line.StartsWith("%") || line.StartsWith("//"))
+                            continue;
+                        Items.Add(line.Split(separator));
+                    }
                 }
             }
+            catch (System.Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
         private int Count(string s, char c)
