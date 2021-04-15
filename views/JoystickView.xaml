@@ -101,8 +101,9 @@
         </Style>
         <oxy:ThicknessConverter x:Key="ThicknessConverter"/>
     </UserControl.Resources>
-    <Viewbox Height="250"     
-        Width="250"    
+
+    <Viewbox Height="200"     
+        Width="200"    
          Stretch="Fill">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -256,7 +257,7 @@
                     </TransformGroup>
                 </Slider.RenderTransform>
             </Slider>
-            <Slider  Style="{StaticResource Horizontal_Slider}" Minimum="-1"  Value="{Binding rudderLabel, Mode=OneWay}" Maximum="1" TickPlacement="None" x:Name="throttleSlider"  Margin="6,202,0,-271" IsEnabled="False" Visibility="Visible" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="333">
+            <Slider  Style="{StaticResource Horizontal_Slider}" Minimum="-1"  Value="{Binding rudderLabel, Mode=OneWay}" Maximum="1" TickPlacement="None" x:Name="throttleSlider"  Margin="6,210,0,-279" IsEnabled="False" Visibility="Visible" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="333">
                 <Slider.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="-1"/>

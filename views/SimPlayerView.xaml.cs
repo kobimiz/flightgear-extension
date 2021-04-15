@@ -97,10 +97,5 @@ namespace flightgearExtension.viewModels
                 e.Handled = true;
             }
         }
-
-        private void progressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
     }
 }

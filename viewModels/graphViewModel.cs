@@ -202,10 +202,11 @@ namespace flightgearExtension.viewModels
         }
         // index is the index of the variable in the csv file in each row
         public PlotModel createGraphFromIndex(int index, string name)
-        {            
+        {
             PlotModel tmp = new PlotModel
             {
                 Title = name,
+                TitleFontSize = 11,
                 PlotMargins = new OxyThickness(50, 0, 0, 40)
             };
 
