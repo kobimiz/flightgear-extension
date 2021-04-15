@@ -39,7 +39,7 @@
                     </TransformGroup>
                 </View:SimPlayerView.RenderTransform>
             </View:SimPlayerView>
-            <View:JoystickView x:Name="joystick" Margin="-234,332,0,-53" Grid.RowSpan="2" HorizontalAlignment="Left" Width="375"/>
+            <View:JoystickView x:Name="joystick" Margin="-219,332,0,-53" Grid.RowSpan="2" HorizontalAlignment="Left" Width="375"/>
 
 
         </Grid>

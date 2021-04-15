@@ -130,26 +130,49 @@ namespace flightgearExtension.viewModels
         }
         public void updateRegression(int frameIndex)
         {
-            RegressionGraph.Annotations.Clear();
+            //
             LineSeries ls1 = selectedGraph.Series[0] as LineSeries;
             LineSeries ls2 = correlatedGraph.Series[0] as LineSeries;
-
-            int from = Math.Max(frameIndex - 30, 0);
-            int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
-            // display 30 points max
-            for (int i = from; i < until; i++)
+            try
             {
+                RegressionGraph.Annotations.RemoveAt(0);
                 RegressionGraph.Annotations.Add(new PointAnnotation
                 {
-                    X = ls1.Points[i].Y,
-                    Y = ls2.Points[i].Y,
+                    X = ls1.Points[frameIndex].Y,
+                    Y = ls2.Points[frameIndex].Y,
                     Shape = MarkerType.Circle,
                     Fill = OxyColors.LightGray,
                     Stroke = OxyColors.DarkGray,
-                    StrokeThickness = 1
+                    StrokeThickness = 1,
                 });
             }
+            catch(Exception ex)
+            {
 
+            }
+            /*
+            RegressionGraph.Annotations.Clear();
+            int from = Math.Max(VM_frameIndex - 30, 0);
+            int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
+            // display 30 points max
+            for (int i = frameIndex; i < frameIndex+1; i++)
+            {
+                try
+                {
+                    RegressionGraph.Annotations.Add(new PointAnnotation
+                    {
+                        X = ls1.Points[i].Y,
+                        Y = ls2.Points[i].Y,
+                        Shape = MarkerType.Circle,
+                        Fill = OxyColors.LightGray,
+                        Stroke = OxyColors.DarkGray,
+                        StrokeThickness = 1,
+                    });
+                } catch(Exception ex)
+                {
+
+                }
+            }*/
             if (frameIndex >= VM_Data.Length)
                 return;
             LineSeries ls = RegressionGraph.Series[0] as LineSeries;
