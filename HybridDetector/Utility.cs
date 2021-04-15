@@ -6,11 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace flightgearExtension.classes
+namespace HybridDetector
 {
     public class Utility
     {
-        static SettingsView settings = new SettingsView();
         public static string[] getVariableNamesFromXML(string XMLPath)
         {
             XmlDocument d = new XmlDocument();
@@ -22,27 +21,6 @@ namespace flightgearExtension.classes
                 res[i] = x[i].SelectSingleNode("name").InnerText;
             return res;
         }
-        // NOTE these does not work if the user changes the dir name from data (or if changed the dir protocol)
-        // TODO: fix this
-        public static string getFgPath()
-        {
-            string fgPath = settings.getSettingValue("fgPath");
-            return fgPath;
-        }
-        public static string getDataDir()
-        {
-            string fgPath = settings.getSettingValue("fgPath");
-            string dataDir = Directory.GetParent(System.IO.Path.GetDirectoryName(fgPath)) + "\\data";
-            return dataDir;
-        }
-        public static string getProtocolDir()
-        {
-            string fgPath = settings.getSettingValue("fgPath");
-            string dataDir = Directory.GetParent(System.IO.Path.GetDirectoryName(fgPath)) + "\\data";
-            string protocolDir = dataDir + "\\protocol";
-            return protocolDir;
-        }
-
 
         // math functions
         public static double avg(double[] x)

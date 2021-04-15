@@ -1,6 +1,11 @@
-﻿using System;
+﻿using flightgearExtension.classes;
+using flightgearExtension.viewModels;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,29 +19,22 @@ namespace flightgearExtension
     /// 
     public partial class MainWindow : Window
     {
-        [DllImport("Kernel32")]
-        public static extern void AllocConsole();
-
-        [DllImport("Kernel32")]
-        public static extern void FreeConsole();
-
-
         private SettingsView settings;
         private viewModels.Model model;
-
-        //[DllImport("libAnomaly.dll")]
-        //public static extern int _Z3addii(int x, int y);
+        private AnomalyReportViewModel arvm;
 
         public MainWindow()
         {
-            AllocConsole();
-            System.Threading.Thread.CurrentThread.Name = "main";
             InitializeComponent();
-            //MessageBox.Show(_Z3addii(1,2).ToString());
+
+            arvm = new AnomalyReportViewModel();
+            arvm.setModel(model);
+            anomalyReports.DataContext = arvm;
 
 
-
+            settings = new SettingsView();
             model = new viewModels.Model();
+            settings.vm.setModel(model);
             joystick.vm.setModel(model);
             simPlayer.vm.setModel(model);
             dataDisplay.vm.setModel(model);
@@ -45,6 +43,7 @@ namespace flightgearExtension
             joystick.vm.setModel(model);
 
             menu.vm.setSimPlayerVM(simPlayer.vm);
+            menu.vm.setSettingsVM(settings.vm);
             menu.vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e) {
                 if (e.PropertyName == "csvPath")
                 {
@@ -53,8 +52,22 @@ namespace flightgearExtension
                 }
                     //data.vm.NotifyPropertyChanged("csvPath");
             };
+            settings.vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == "csvPath")
+                    simPlayer.vm.loadCSV(settings.getSettingValue("csvPath"));
+                if (e.PropertyName == "dllPath") 
+                {
+                    try
+                    {
+                        loadAnomalies();
+                    }
+                    catch (Exception)
+                    { }
+                }
+            };
 
-            settings = new SettingsView();
+
             try
             {
                 // preload if xml file is in place
@@ -74,10 +87,39 @@ namespace flightgearExtension
             } catch (Exception) { }
         }
 
+        private void loadAnomalies()
+        {
+            Assembly DLL = Assembly.LoadFile(settings.getSettingValue("dllPath"));
+            Type SimpleDetector = Array.Find(DLL.GetExportedTypes(), item => item.Name == "Detector");
+            MethodInfo learnFlight = Array.Find(SimpleDetector.GetMethods(), method => method.Name == "learnFlight");
+            MethodInfo detect = Array.Find(SimpleDetector.GetMethods(), method => method.Name == "detectAnomalies");
+
+            var c = Activator.CreateInstance(SimpleDetector);
+            CsvDocument learnDoc = new CsvDocument();
+            learnDoc.Load(settings.getSettingValue("csvPath"));
+            CsvDocument detectDoc = new CsvDocument();
+            detectDoc.Load(settings.getSettingValue("anomPath"));
+
+            learnFlight.Invoke(c, new object[] { learnDoc });
+
+            AnomalyReport[] anomalies = (AnomalyReport[])(object[])detect.Invoke(c, new object[] { detectDoc });
+            ObservableCollection<AnomalyReport> l = new ObservableCollection<AnomalyReport>();
+            foreach (var anomaly in anomalies)
+            {
+                l.Add(anomaly);
+            }
+            arvm.Reports = l;
+            lengthLabel.Content = "Count: " + anomalies.Length.ToString();
+        }
         private void Window_Closed(object sender, EventArgs e)
         {
             simPlayer.vm.closeConnections();
         }
 
+        private void anomalyReports_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int frameNumber = int.Parse(anomalyReports.SelectedItem.ToString().Split(" ")[0]);
+            simPlayer.vm.skip(frameNumber - simPlayer.vm.VM_frameIndex);
+        }
     }
 }

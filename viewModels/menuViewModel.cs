@@ -11,6 +11,7 @@ namespace flightgearExtension.viewModels
     public class menuViewModel : ViewModel
     {
         private SimPlayerViewModel simPlayerVM;
+        private SettingsViewModel settingsVM;
         public menuViewModel(Model model) : base(model)
         {
         }
@@ -23,10 +24,7 @@ namespace flightgearExtension.viewModels
             // TODO make sure path leads to flightgear.
             try
             {
-                SettingsView settings = new SettingsView();
-                settings.vm.setModel(model);
-
-                Process[] pname = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settings.getSettingValue("fgPath")));
+                Process[] pname = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(settingsVM.getSettingValue("fgPath")));
                 if (pname.Length == 1)
                 {
                     // TODO: explain to the user what constitutes as correct settings 
@@ -42,6 +40,7 @@ namespace flightgearExtension.viewModels
                     return;
                 }
 
+                // TODO implement with notifications
                 if (!simPlayerVM.loadXML(protocolDir + "\\playback_small.xml"))
                 {
                     MessageBox.Show("Please make sure there is an xml file first.");
@@ -61,12 +60,7 @@ namespace flightgearExtension.viewModels
         public void openSettings()
         {
             SettingsView settings = new SettingsView();
-            settings.vm.setModel(model);
-            settings.vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
-            {
-                if (e.PropertyName == "csvPath")
-                    simPlayerVM.loadCSV(settings.getSettingValue("csvPath"));
-            };
+            settings.setVM(settingsVM);
             settings.ShowDialog();
             settings.Close();
         }
@@ -108,5 +102,9 @@ namespace flightgearExtension.viewModels
             }
         }
 
+        public void setSettingsVM(SettingsViewModel vm)
+        {
+            settingsVM = vm;
+        }
     }
 }

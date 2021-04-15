@@ -18,6 +18,9 @@
         <StackPanel>
             <Controls:menuView x:Name="menu"></Controls:menuView>
             <View:DataDisplayView Grid.Column="0" x:Name="dataDisplay"></View:DataDisplayView>
+            <Label>Anomaly Reports:</Label>
+            <ListBox Name="anomalyReports" ItemsSource="{ Binding Reports }" Height="400" SelectionChanged="anomalyReports_SelectionChanged"></ListBox>
+            <Label Name="lengthLabel"></Label>
         </StackPanel>
 
 

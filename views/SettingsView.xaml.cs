@@ -29,6 +29,8 @@ namespace flightgearExtension
 
             vm.buttonLabelMap[openFG] = fgPath;
             vm.buttonLabelMap[openCSV] = csvPath;
+            vm.buttonLabelMap[openAnom] = anomPath;
+            vm.buttonLabelMap[openDLL] = dllPath;
 
             vm.updateLabels();
         }
@@ -40,6 +42,15 @@ namespace flightgearExtension
         public string getSettingValue(string key)
         {
             return vm.getSettingValue(key);
+        }
+
+        public void setVM(SettingsViewModel vm)
+        {
+            this.vm = vm;
+            vm.buttonLabelMap[openFG] = fgPath;
+            vm.buttonLabelMap[openCSV] = csvPath;
+            vm.buttonLabelMap[openAnom] = anomPath;
+            vm.buttonLabelMap[openDLL] = dllPath;
         }
     }
 }

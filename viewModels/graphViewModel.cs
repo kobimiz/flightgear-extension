@@ -78,7 +78,6 @@ namespace flightgearExtension.viewModels
                     SettingsViewModel vm = new SettingsViewModel(model);
                     if (csv.Load(vm.getSettingValue("csvPath")))
                     {
-                        Console.WriteLine("creating graphs from csvPath in " + Thread.CurrentThread.Name);
                         lock (regressionLock)
                         {
                             regressionGraph = createGraphFromIndex(0, "Linear regression between the two");
@@ -113,7 +112,6 @@ namespace flightgearExtension.viewModels
 
                         lock (selectedLock)
                         {
-                            Console.WriteLine("creating graphs from SelectedGraphIndex in " + Thread.CurrentThread.Name);
                             SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
                         }
                         lock (correlatedLock)
@@ -175,7 +173,6 @@ namespace flightgearExtension.viewModels
 
             int from = Math.Max(frameIndex - 30, 0);
             int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
-            Console.WriteLine("adding from " + from + " to " + until);
             // display 30 points max
             for (int i = from; i < until; i++)
             {
