@@ -187,7 +187,7 @@ namespace flightgearExtension.viewModels
             {
 
             }
-            /*
+
             RegressionGraph.Annotations.Clear();
             int from = Math.Max(VM_frameIndex - 30, 0);
             int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
