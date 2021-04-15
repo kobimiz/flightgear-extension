@@ -8,28 +8,61 @@
              d:DesignHeight="400" d:DesignWidth="400">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="8*"></RowDefinition>
-            <RowDefinition Height="4*"></RowDefinition>
+            <RowDefinition Height="52*"></RowDefinition>
+            <RowDefinition Height="233*"></RowDefinition>
+            <RowDefinition Height="115*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Label Content="Controllers" Grid.Row="1" HorizontalAlignment="Center"/>
+       <!-- <Label Content="Controllers" HorizontalAlignment="Center" Margin="0,8,0,20" Width="68"/>-->
 
         <StackPanel Grid.Row="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label VerticalAlignment="Center" FontSize="16">FPS (a positive integer):</Label>
-                <TextBox Name="speedTb" Width="50" Height="44" VerticalAlignment="Center" Text="{Binding Path=VM_FPS, UpdateSourceTrigger=PropertyChanged}"
-                         TextAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="speedTb_PrevTextInput"/>
-                <Button Margin="5" Click="FiveSecPrev">
+                <TextBox BorderBrush="#FFD6E3F1" Name="speedTb" Width="50" Height="44" VerticalAlignment="Center" Text="{Binding Path=VM_FPS, UpdateSourceTrigger=PropertyChanged}"
+                         TextAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="speedTb_PrevTextInput">
+                    <TextBox.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFD9DCEC" Offset="0.647"/>
+                           
+                        </LinearGradientBrush>
+                    </TextBox.Background>
+                </TextBox>
+                <Button Margin="5" Click="FiveSecPrev" BorderBrush="#FFD6E3F1">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFD9DCEC" Offset="0.647"/>
+                            <GradientStop Color="#FFA5ADCF" Offset="0"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
                     <Image Source="/windows/doubleLeftArrow.png" Width="20" Height="20" Margin="10"></Image>
                 </Button>
-                <Button Margin="5" Click="play">
+                <Button Margin="5" Click="play" BorderBrush="#FFD6E3F1">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFD9DCEC" Offset="0.647"/>
+                            <GradientStop Color="#FFA5ADCF" Offset="0"/>
+                         
+
+                        </LinearGradientBrush>
+                    </Button.Background>
                     <Image Source="/windows/play.png" Width="20" Height="20" Margin="10"></Image>
                 </Button>
-                <Button Margin="5" Click="pause">
+                <Button Margin="5" Click="pause" BorderBrush="#FFD6E3F1">
+                  <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFD9DCEC" Offset="0.647"/>
+                            <GradientStop Color="#FFA5ADCF" Offset="0"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
                     <Image Source="/windows/pause.png" Width="20" Height="20" Margin="10"></Image>
                 </Button>
-                <Button Margin="5" Click="FiveSecFor">
+                <Button Margin="5" Click="FiveSecFor" BorderBrush="#FFD6E3F1">
+                     <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFD9DCEC" Offset="0.647"/>
+                            <GradientStop Color="#FFA5ADCF" Offset="0"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
                     <Image Source="/windows/doubleRightArrow.png.png" Width="20" Height="20" Margin="10"></Image>
                 </Button>
             </StackPanel>

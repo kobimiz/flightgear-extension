@@ -167,11 +167,29 @@ namespace flightgearExtension.viewModels
         }
         public void updateRegression(int frameIndex)
         {
-            RegressionGraph.Annotations.Clear();
+            //
             LineSeries ls1 = selectedGraph.Series[0] as LineSeries;
             LineSeries ls2 = correlatedGraph.Series[0] as LineSeries;
+            try
+            {
+                RegressionGraph.Annotations.RemoveAt(0);
+                RegressionGraph.Annotations.Add(new PointAnnotation
+                {
+                    X = ls1.Points[frameIndex].Y,
+                    Y = ls2.Points[frameIndex].Y,
+                    Shape = MarkerType.Circle,
+                    Fill = OxyColors.LightGray,
+                    Stroke = OxyColors.DarkGray,
+                    StrokeThickness = 1,
+                });
+            }
+            catch(Exception ex)
+            {
 
-            int from = Math.Max(frameIndex - 30, 0);
+            }
+            /*
+            RegressionGraph.Annotations.Clear();
+            int from = Math.Max(VM_frameIndex - 30, 0);
             int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
             // display 30 points max
             for (int i = from; i < until; i++)
@@ -186,7 +204,6 @@ namespace flightgearExtension.viewModels
                     StrokeThickness = 1
                 });
             }
-
 
             if (frameIndex >= VM_Data.Length)
                 return;
@@ -241,10 +258,11 @@ namespace flightgearExtension.viewModels
 
         // index is the index of the variable in the csv file in each row
         public PlotModel createGraphFromIndex(int index, string name)
-        {            
+        {
             PlotModel tmp = new PlotModel
             {
                 Title = name,
+                TitleFontSize = 11,
                 PlotMargins = new OxyThickness(50, 0, 0, 40)
             };
 
