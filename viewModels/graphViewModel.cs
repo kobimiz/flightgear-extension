@@ -20,11 +20,7 @@ namespace flightgearExtension.viewModels
         private PlotModel selectedGraph;
         private PlotModel correlatedGraph;
         private PlotModel regressionGraph;
-        private List<DataPoint> regressionPoints;
-
-        private static object selectedLock = new object();
-        private static object correlatedLock = new object();
-        private static object regressionLock = new object();
+        List<DataPoint> regressionPoints;
 
         private int selectedGraphIndex;
         private int correlatedGraphIndex;
@@ -78,18 +74,9 @@ namespace flightgearExtension.viewModels
                     SettingsViewModel vm = new SettingsViewModel(model);
                     if (csv.Load(vm.getSettingValue("csvPath")))
                     {
-                        lock (regressionLock)
-                        {
-                            regressionGraph = createGraphFromIndex(0, "Linear regression between the two");
-                        }
-                        lock (selectedLock)
-                        {
-                            SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
-                        }
-                        lock (correlatedLock)
-                        {
-                            CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex, "Correlated: " + VM_headings[correlatedGraphIndex]);
-                        }
+                        regressionGraph = createGraphFromIndex(0, "Linear regression between the two");
+                        SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
+                        CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex, "Correlated: " + VM_headings[correlatedGraphIndex]);
                         if (VM_Data != null)
                         {
                             recalcRegressionPoints();
@@ -110,14 +97,8 @@ namespace flightgearExtension.viewModels
                     {
                         correlatedGraphIndex = mostCorrelativeIndex();
 
-                        lock (selectedLock)
-                        {
-                            SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
-                        }
-                        lock (correlatedLock)
-                        {
-                            CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex, "Correlated: " + VM_headings[correlatedGraphIndex]);
-                        }
+                        SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
+                        CorrelatedGraph = createGraphFromIndex(correlatedGraphIndex, "Correlated: " + VM_headings[correlatedGraphIndex]);
                         (regressionGraph.Series[0] as LineSeries).Points.Clear();
                         recalcRegressionPoints();
                         updateGraphs();
@@ -127,42 +108,24 @@ namespace flightgearExtension.viewModels
         }
         public void updateGraphs()
         {
-            lock (selectedLock)
-            {
-                updatePoints(SelectedGraph, selectedGraphIndex, VM_frameIndex);
-                selectedGraph.InvalidatePlot(true);
-            }
-            lock (correlatedLock)
-            {
-                updatePoints(CorrelatedGraph, correlatedGraphIndex, VM_frameIndex);
-                correlatedGraph.InvalidatePlot(true);
-            }
-            lock (regressionLock)
-            {
-                lock (correlatedLock)
-                {
-                    lock (selectedLock)
-                    {
-                        updateRegression(VM_frameIndex);
-                        regressionGraph.InvalidatePlot(true);
-                    }
-                }
-            }
+            updatePoints(SelectedGraph, selectedGraphIndex, VM_frameIndex);
+            updatePoints(CorrelatedGraph, correlatedGraphIndex, VM_frameIndex);
+            updateRegression(VM_frameIndex);
+            selectedGraph.InvalidatePlot(true);
+            correlatedGraph.InvalidatePlot(true);
+            regressionGraph.InvalidatePlot(true);
         }
         public void recalcRegressionPoints()
         {
-            lock (regressionLock)
+            regressionPoints.Clear();
+            // TODO: optimize
+            Tuple<double, double> line = Utility.linear_reg(getFeatureArray(selectedGraphIndex), getFeatureArray(correlatedGraphIndex));
+            for (int i = 0; i < VM_Data.Length; i++)
             {
-                regressionPoints.Clear();
-                // TODO: optimize
-                Tuple<double, double> line = Utility.linear_reg(getFeatureArray(selectedGraphIndex), getFeatureArray(correlatedGraphIndex));
-                for (int i = 0; i < VM_Data.Length; i++)
-                {
-                    double y = line.Item1 * i + line.Item2;
-                    if (double.IsNaN(y))
-                        y = 0;
-                    regressionPoints.Add(new DataPoint(i, y));
-                }
+                double y = line.Item1 * i + line.Item2;
+                if (double.IsNaN(y))
+                    y = 0;
+                regressionPoints.Add(new DataPoint(i, y));
             }
         }
         public void updateRegression(int frameIndex)
@@ -187,24 +150,29 @@ namespace flightgearExtension.viewModels
             {
 
             }
-
+            /*
             RegressionGraph.Annotations.Clear();
             int from = Math.Max(VM_frameIndex - 30, 0);
             int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
             // display 30 points max
-            for (int i = from; i < until; i++)
+            for (int i = frameIndex; i < frameIndex+1; i++)
             {
-                RegressionGraph.Annotations.Add(new PointAnnotation
+                try
                 {
-                    X = ls1.Points[i].Y,
-                    Y = ls2.Points[i].Y,
-                    Shape = MarkerType.Circle,
-                    Fill = OxyColors.LightGray,
-                    Stroke = OxyColors.DarkGray,
-                    StrokeThickness = 1
-                });
-            }
+                    RegressionGraph.Annotations.Add(new PointAnnotation
+                    {
+                        X = ls1.Points[i].Y,
+                        Y = ls2.Points[i].Y,
+                        Shape = MarkerType.Circle,
+                        Fill = OxyColors.LightGray,
+                        Stroke = OxyColors.DarkGray,
+                        StrokeThickness = 1,
+                    });
+                } catch(Exception ex)
+                {
 
+                }
+            }*/
             if (frameIndex >= VM_Data.Length)
                 return;
             LineSeries ls = RegressionGraph.Series[0] as LineSeries;
@@ -219,7 +187,9 @@ namespace flightgearExtension.viewModels
                     double y = regressionPoints[i].Y;
                     range.Add(new DataPoint(x, y));
                 }
-                ls.Points.AddRange(range);
+
+                lock (this)
+                    ls.Points.AddRange(range);
             }
             else if (frameIndex < ls.Points.Count - 1)
             {
@@ -229,8 +199,6 @@ namespace flightgearExtension.viewModels
                 ls.Points.RemoveRange(frameIndex, ls.Points.Count - frameIndex);
             }
         }
-
-
         public void updatePoints(PlotModel graph, int index, int frameIndex)
         {
             if (frameIndex >= VM_Data.Length)
@@ -244,7 +212,8 @@ namespace flightgearExtension.viewModels
                 for (int i = ls.Points.Count; i < frameIndex; i++)
                     range.Add(new DataPoint(i, double.Parse(csv.Items[i][index])));
 
-                ls.Points.AddRange(range);
+                lock (this)
+                    ls.Points.AddRange(range);
             }
             else if (frameIndex < ls.Points.Count - 1)
             {
@@ -254,8 +223,6 @@ namespace flightgearExtension.viewModels
                 ls.Points.RemoveRange(frameIndex, ls.Points.Count - frameIndex);
             }
         }
-
-
         // index is the index of the variable in the csv file in each row
         public PlotModel createGraphFromIndex(int index, string name)
         {
