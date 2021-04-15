@@ -35,18 +35,32 @@ namespace flightgearExtension.viewModels
         public string rudderLabel
         {
             get => getDataFromCurrFrameByName("rudder");
+            set {
+                NotifyPropertyChanged("rudderLabel");
+            }
         }
         public string aileronLabel
         {
             get => getDataFromCurrFrameByName("aileron");
+            set {
+                NotifyPropertyChanged("aileronLabel");
+            }
         }
         public string throttleLabel
         {
             get => getDataFromCurrFrameByName("throttle");
+            set
+            {
+                NotifyPropertyChanged("throttleLabel");
+            }
         }
         public string elevatorLabel
         {
             get => getDataFromCurrFrameByName("elevator");
+            set
+            {
+                NotifyPropertyChanged("elevatorLabel");
+            }
         }
         private string getDataFromCurrFrameByName(string name)
         {

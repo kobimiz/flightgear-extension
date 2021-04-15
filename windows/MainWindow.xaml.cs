@@ -11,8 +11,16 @@ namespace flightgearExtension
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
+        [DllImport("Kernel32")]
+        public static extern void AllocConsole();
+
+        [DllImport("Kernel32")]
+        public static extern void FreeConsole();
+
+
         private SettingsView settings;
         private viewModels.Model model;
 
@@ -21,8 +29,12 @@ namespace flightgearExtension
 
         public MainWindow()
         {
+            AllocConsole();
+            System.Threading.Thread.CurrentThread.Name = "main";
             InitializeComponent();
             //MessageBox.Show(_Z3addii(1,2).ToString());
+
+
 
             model = new viewModels.Model();
             joystick.vm.setModel(model);
@@ -30,6 +42,8 @@ namespace flightgearExtension
             dataDisplay.vm.setModel(model);
             data.vm.setModel(model);
             menu.vm.setModel(model);
+            joystick.vm.setModel(model);
+
             menu.vm.setSimPlayerVM(simPlayer.vm);
             menu.vm.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e) {
                 if (e.PropertyName == "csvPath")

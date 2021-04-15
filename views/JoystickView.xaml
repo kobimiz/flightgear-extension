@@ -136,7 +136,7 @@
                     </Canvas.Resources>
                 </Canvas>
             </Canvas>
-            <Slider Minimum="0"  Value="{Binding Binding throttleLabel}" Maximum="1" TickPlacement="None" Name="rudderSlider" IsEnabled="False" RenderTransformOrigin="0.5,0.5" Margin="-49,35,51,33">
+            <Slider Minimum="0"  Value="{Binding throttleLabel}" Maximum="1" TickPlacement="None" Name="rudderSlider" IsEnabled="False" RenderTransformOrigin="0.5,0.5" Margin="-49,35,51,33">
                 <Slider.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>

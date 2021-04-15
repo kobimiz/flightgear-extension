@@ -24,7 +24,6 @@ namespace flightgearExtension.viewModels
             client = null;
             writer = null;
             threadSuspender = new ManualResetEvent(false);
-
             t = new Thread(delegate () {
                 while (true)
                 {
@@ -34,6 +33,7 @@ namespace flightgearExtension.viewModels
                     Thread.Sleep((int)(1000 / this.model.FPS));
                 }
             });
+            t.Name = "simplayer";
             t.Start();
         }
 
