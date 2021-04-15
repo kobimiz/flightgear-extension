@@ -4,6 +4,7 @@ given by an input file. Given a flight, this extension can show you
 - Graphs of all features given in the input file.
 - Correlation between all features.
 - Linear regression between correlated features.
+- Find anomalies in a flight using a custom anomaly dedtector.
 
 # HOW TO USE
 When you open the application, you need to go to settings and set the
@@ -14,6 +15,15 @@ the csv file in the directory [FG-Base-Dir]/data/Protocol.
 After you set the settings, **you need to restart the application**, (your
 settings are saved) and click the "Launch Flightgear" button. After Flightgear is ready to go,
 hit "Start simulation", and you are ready to go.
+If you want to view anomalies, you need to specify the location of the 
+dll that contains the functionality of the detecion in the settings, and an additional
+csv file to find anomalies in (the first is to learn from). Note that every time the application
+is run you need to re-set the location of the dll to view the anomalies.
+
+# How to build a custom anomaly DLL
+The dll needs to contain a class called Detector that has two public methods:
+detectAnomalies and leanFlight. Both of which take a flightgearExtension.classes.CsvDocuemnt
+as a parameter, and leanFlight returns an array of flightgearExtension.classes.AnomalyReport
 
 # How to download
 Can be cloned from https://github.com/kobimiz/flightgear-extension
