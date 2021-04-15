@@ -34,7 +34,8 @@ namespace flightgearExtension.viewModels
         public int SelectedGraphIndex
         {
             get { return selectedGraphIndex; }
-            set { 
+            set
+            {
                 selectedGraphIndex = value;
                 NotifyPropertyChanged("SelectedGraphIndex");
             }
@@ -84,7 +85,8 @@ namespace flightgearExtension.viewModels
                         }
                         lock (selectedLock)
                         {
-                            SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
+                            if (VM_headings != null)
+                                SelectedGraph = createGraphFromIndex(selectedGraphIndex, VM_headings[selectedGraphIndex]);
                         }
                         lock (correlatedLock)
                         {
@@ -183,52 +185,54 @@ namespace flightgearExtension.viewModels
                     StrokeThickness = 1,
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
-            int from = Math.Max(frameIndex - 30, 0);
-            int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
-            // display 30 points max
-            for (int i = frameIndex; i < frameIndex+1; i++)
-            {
-                try
+                int from = Math.Max(frameIndex - 30, 0);
+                int until = Math.Min(Math.Min(ls1.Points.Count, ls2.Points.Count), from + 30);
+                // display 30 points max
+                for (int i = frameIndex; i < frameIndex + 1; i++)
                 {
-                    RegressionGraph.Annotations.Add(new PointAnnotation
+                    try
                     {
-                        X = ls1.Points[i].Y,
-                        Y = ls2.Points[i].Y,
-                        Shape = MarkerType.Circle,
-                        Fill = OxyColors.LightGray,
-                        Stroke = OxyColors.DarkGray,
-                        StrokeThickness = 1,
-                    });
-                } catch(Exception ex)
-                {
+                        RegressionGraph.Annotations.Add(new PointAnnotation
+                        {
+                            X = ls1.Points[i].Y,
+                            Y = ls2.Points[i].Y,
+                            Shape = MarkerType.Circle,
+                            Fill = OxyColors.LightGray,
+                            Stroke = OxyColors.DarkGray,
+                            StrokeThickness = 1,
+                        });
+                    }
+                    catch (Exception ex2)
+                    {
 
+                    }
                 }
-            }*/
-            if (frameIndex >= VM_Data.Length)
-                return;
-            LineSeries ls = RegressionGraph.Series[0] as LineSeries;
-            if (frameIndex > ls.Points.Count - 1)
-            {
-                // need to add points that are missing
-                List<DataPoint> range = new List<DataPoint>();
-                // TODO: check index validity
-                for (int i = ls.Points.Count; i < frameIndex; i++)
-                {
-                    double x = regressionPoints[i].X;
-                    double y = regressionPoints[i].Y;
-                    range.Add(new DataPoint(x, y));
-                }
-                ls.Points.AddRange(range);
-            }
-            else if (frameIndex < ls.Points.Count - 1)
-            {
-                // need to remove points
-                if (frameIndex < 0)
+                if (frameIndex >= VM_Data.Length)
                     return;
-                ls.Points.RemoveRange(frameIndex, ls.Points.Count - frameIndex);
+                LineSeries ls = RegressionGraph.Series[0] as LineSeries;
+                if (frameIndex > ls.Points.Count - 1)
+                {
+                    // need to add points that are missing
+                    List<DataPoint> range = new List<DataPoint>();
+                    // TODO: check index validity
+                    for (int i = ls.Points.Count; i < frameIndex; i++)
+                    {
+                        double x = regressionPoints[i].X;
+                        double y = regressionPoints[i].Y;
+                        range.Add(new DataPoint(x, y));
+                    }
+                    ls.Points.AddRange(range);
+                }
+                else if (frameIndex < ls.Points.Count - 1)
+                {
+                    // need to remove points
+                    if (frameIndex < 0)
+                        return;
+                    ls.Points.RemoveRange(frameIndex, ls.Points.Count - frameIndex);
+                }
             }
         }
 
@@ -268,7 +272,7 @@ namespace flightgearExtension.viewModels
                 PlotMargins = new OxyThickness(50, 0, 0, 40)
             };
 
-            var ls = new LineSeries { Title = csv.Headers[index]};
+            var ls = new LineSeries { Title = csv.Headers[index] };
             tmp.Series.Add(ls);
 
             tmp.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom });
@@ -279,12 +283,13 @@ namespace flightgearExtension.viewModels
         private int mostCorrelativeIndex()
         {
             double[] currFeatureArray = getFeatureArray(selectedGraphIndex);
-            double[] pearsons = VM_headings.Select((heading, index) => {
+            double[] pearsons = VM_headings.Select((heading, index) =>
+            {
                 double person = Utility.pearson(getFeatureArray(index), currFeatureArray);
                 if (double.IsNaN(person))
                     return 0.0;
                 return person;
-                }).Where((item, index) => index != selectedGraphIndex).ToArray(); // remove pearson of feature with itself
+            }).Where((item, index) => index != selectedGraphIndex).ToArray(); // remove pearson of feature with itself
             return pearsons.ToList().IndexOf(pearsons.Max());
         }
 

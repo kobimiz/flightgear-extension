@@ -7,7 +7,7 @@
         xmlns:View="clr-namespace:flightgearExtension.viewModels"
         xmlns:Controls="clr-namespace:flightgearExtension.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="850" Closed="Window_Closed">
+        Title="MainWindow" Height="1000" Width="1200" Closed="Window_Closed">
 
 
     <Grid Margin="10" TextBlock.FontSize="20">
@@ -42,7 +42,7 @@
                     </TransformGroup>
                 </View:SimPlayerView.RenderTransform>
             </View:SimPlayerView>
-            <View:JoystickView x:Name="joystick" Margin="-219,332,0,-53" Grid.RowSpan="2" HorizontalAlignment="Left" Width="375"/>
+            <View:JoystickView x:Name="joystick" Margin="-219,332,0,-53" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="375"/>
 
 
         </Grid>
