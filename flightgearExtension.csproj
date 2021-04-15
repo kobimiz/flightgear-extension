@@ -8,9 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controls\**" />
     <Compile Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="Controls\**" />
     <EmbeddedResource Remove="NewFolder1\**" />
+    <None Remove="Controls\**" />
     <None Remove="NewFolder1\**" />
+    <Page Remove="Controls\**" />
     <Page Remove="NewFolder1\**" />
   </ItemGroup>
 
@@ -34,7 +38,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\" />
+    <Compile Update="temporaryfolder\dataDisplayView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="temporaryfolder\graphsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="temporaryfolder\menuView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="temporaryfolder\SimPlayerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

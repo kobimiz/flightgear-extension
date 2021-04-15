@@ -28,7 +28,8 @@ namespace flightgearExtension.viewModels
 
         public JoystickViewModel(Model model) : base(model)
         {
-
+            joystick_aileron = 125;
+            joystick_elevator = 125;
         }
         public override void setModel(Model m)
         {
@@ -43,8 +44,11 @@ namespace flightgearExtension.viewModels
                     NotifyPropertyChanged("aileronLabel");
                     NotifyPropertyChanged("throttleLabel");
                     NotifyPropertyChanged("elevatorLabel");
-                    joystick_aileron = float.Parse(aileronLabel.ToString()) * 120 + 65;
-                    joystick_elevator = float.Parse(elevatorLabel.ToString()) * 120 + 65;
+                    joystick_aileron = float.Parse(aileronLabel.ToString()) * 60 + 125;
+                    joystick_elevator = float.Parse(elevatorLabel.ToString()) * 60 + 125;
+                    NotifyPropertyChanged("joystick_aileron");
+                    NotifyPropertyChanged("joystick_elevator");
+
 
                 }
             };
