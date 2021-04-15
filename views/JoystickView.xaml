@@ -6,6 +6,99 @@
         xmlns:oxy="http://oxyplot.org/wpf" x:Class="flightgearExtension.viewModels.JoystickView"
         mc:Ignorable="d">
     <UserControl.Resources>
+
+        <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="IsTabStop" Value="false" />
+            <Setter Property="Focusable" Value="false" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderRepeatButton1" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border SnapsToDevicePixels="True" Background="GreenYellow"  BorderThickness="1" BorderBrush="GreenYellow" Height="3"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderThumb" TargetType="Thumb">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <StackPanel Orientation="Vertical">
+                            <Path Data="M 0 0 L 8 0 L 4 6 Z"  Stroke="green" Margin="-2,0,0,0" StrokeThickness="2" Fill="DeepSkyBlue"></Path>
+                            <Line X1="0" Y1="0" X2="0" Y2="7" Stroke="Gray" StrokeThickness="1" Margin="2,0,0,0" StrokeDashArray="1.5,1.5"></Line>
+                            <TextBlock Foreground="Black" Margin="-2,30,0,0"  Text="{Binding Value, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Slider}}}"/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="Slider"  TargetType="Slider">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TickBar  x:Name="TopTick"  Fill="LightGray" VerticalAlignment="Top"   SnapsToDevicePixels="True" Grid.Row="0" Placement="Top" Height="5" Visibility="Visible"/>
+                <Border BorderBrush="LightGray"  BorderThickness="0,0,0,1" ></Border>
+                <Border x:Name="TrackBackground" VerticalAlignment="Center" Margin="0,-10,0,0" BorderBrush="SlateGray" Background="SlateGray" Height="3"   Grid.Row="1"  BorderThickness="1"/>
+                <Track Grid.Row="1" x:Name="PART_Track" Margin="0,-10,0,0"  >
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource SliderThumb}" Margin="0,-20,0,0" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton}" Command="Slider.IncreaseLarge" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <TextBlock Text="0" Grid.Row="1" Margin="0,15,0,0"></TextBlock>
+                <TickBar x:Name="BottomTick" Fill="LightGray"   SnapsToDevicePixels="True" Grid.Row="2"   Placement="Bottom" Height="4" Visibility="Collapsed" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="TickPlacement"  Value="TopLeft">
+                    <Setter TargetName="TopTick" Property="Visibility"  Value="Visible" />
+                </Trigger>
+                <Trigger Property="TickPlacement" Value="BottomRight">
+                    <Setter TargetName="BottomTick"  Property="Visibility"  Value="Visible" />
+                </Trigger>
+                <Trigger Property="TickPlacement" Value="Both">
+                    <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="Horizontal_Slider" TargetType="Slider">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="MinHeight" Value="21" />
+                    <Setter Property="MinWidth" Value="104" />
+                    <Setter Property="Template" Value="{StaticResource Slider}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <oxy:ThicknessConverter x:Key="ThicknessConverter"/>
     </UserControl.Resources>
     <Viewbox Height="250"     
@@ -153,7 +246,7 @@
 
                 </Canvas>
             </Canvas>
-            <Slider Minimum="0"  Value="{Binding throttleLabel, Mode=OneWay}" Maximum="1" TickPlacement="None" x:Name="rudderSlider" RenderTransformOrigin="0.5,0.5" Margin="-124,90,126,96" IsEnabled="False" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Slider Style="{StaticResource Horizontal_Slider}" Minimum="0"  Value="{Binding throttleLabel, Mode=OneWay}" Maximum="1" TickPlacement="None" x:Name="rudderSlider" RenderTransformOrigin="0.5,0.5" Margin="-124,90,126,96" IsEnabled="False" Grid.ColumnSpan="2" Grid.RowSpan="2">
                 <Slider.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -163,7 +256,7 @@
                     </TransformGroup>
                 </Slider.RenderTransform>
             </Slider>
-            <Slider Minimum="-1"  Value="{Binding rudderLabel, Mode=OneWay}" Maximum="1" TickPlacement="None" x:Name="throttleSlider"  Margin="6,187,1,-256" IsEnabled="False" Visibility="Visible" Grid.Row="1" Grid.ColumnSpan="2">
+            <Slider  Style="{StaticResource Horizontal_Slider}" Minimum="-1"  Value="{Binding rudderLabel, Mode=OneWay}" Maximum="1" TickPlacement="None" x:Name="throttleSlider"  Margin="6,202,0,-271" IsEnabled="False" Visibility="Visible" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="333">
                 <Slider.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="-1"/>

@@ -10,6 +10,7 @@
         Title="MainWindow" Height="950" Width="1200" Closed="Window_Closed">
 
     <Grid Margin="10" TextBlock.FontSize="20">
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
