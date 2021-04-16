@@ -19,6 +19,7 @@ If you want to view anomalies, you need to specify the location of the
 dll that contains the functionality of the detecion in the settings, and an additional
 csv file to find anomalies in (the first is to learn from). Note that every time the application
 is run you need to re-set the location of the dll to view the anomalies.
+
 tutorial video: https://youtu.be/qS5ihpriwpk
 
 # How to build a custom anomaly DLL
